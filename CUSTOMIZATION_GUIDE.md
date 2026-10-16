@@ -14,7 +14,7 @@ Also update the text inside `public/favicon.svg` and the name fields in `public/
 
 ## Date, time, and timezone
 
-- `weddingDate` is an ISO date with an explicit UTC offset, for example `2026-08-11T16:00:00+03:00`.
+- `weddingDate` is an ISO date with an explicit UTC offset, for example `2026-10-22T16:00:00+03:00`.
 - `endDate` uses the same format.
 - `timezone` is an IANA timezone such as `Africa/Cairo`.
 - `displayDate` is the long human-readable date.

@@ -14,9 +14,8 @@ function invitationSeo(): Plugin {
   const eventData = {
     '@context': 'https://schema.org',
     '@type': 'Event',
-    name: `${invitation.brideName} & ${invitation.groomName}'s Wedding`,
+    name: `حفل زفاف ${invitation.groomName} و ${invitation.brideName}`,
     startDate: invitation.weddingDate,
-    endDate: invitation.endDate,
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     eventStatus: 'https://schema.org/EventScheduled',
     description: invitation.social.description,
@@ -33,7 +32,7 @@ function invitationSeo(): Plugin {
     },
     organizer: {
       '@type': 'Person',
-      name: `${invitation.brideName} & ${invitation.groomName}`
+      name: `${invitation.groomName} و ${invitation.brideName}`
     }
   };
 
@@ -81,8 +80,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          animation: ['gsap', 'framer-motion'],
-          gallery: ['swiper']
+          animation: ['gsap', 'framer-motion']
+
         }
       }
     }

@@ -6,7 +6,7 @@ import {
   type StoredGuestNote
 } from '../../server/guestNotes';
 
-const STORE_NAME = 'wedding-guest-notes';
+const STORE_NAME = 'ahmed-alaa-2026-guest-notes';
 const MAX_STORED_NOTES_SCAN = 500;
 
 const netlifyGuestNotesStore: GuestNotesStore = {

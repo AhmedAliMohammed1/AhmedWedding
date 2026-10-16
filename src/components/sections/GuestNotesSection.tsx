@@ -53,7 +53,7 @@ const formatNoteDate = (value: string) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return '';
 
-  return new Intl.DateTimeFormat('en', {
+  return new Intl.DateTimeFormat('ar-EG', {
     day: 'numeric',
     month: 'long',
     year: 'numeric'
@@ -91,7 +91,7 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
       });
       const data = await readNotesApiResponse<GuestNotesResponse>(
         response,
-        'The notes could not be loaded.'
+        'تعذر تحميل التهاني. يرجى المحاولة مجددًا.'
       );
 
       if (
@@ -99,15 +99,15 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
         !data.notes.every(isGuestNote) ||
         !isGuestNotesPagination(data.pagination)
       ) {
-        throw new Error('The guest-notes service returned an invalid response. Please try again.');
+        throw new Error('تعذر تحميل التهاني. يرجى المحاولة مجددًا.');
       }
 
       setNotes(data.notes);
       setPagination(data.pagination);
       setExpandedNoteIds(new Set());
       setNotesLoaded(true);
-    } catch (error) {
-      setNotesError(error instanceof Error ? error.message : 'The notes could not be loaded.');
+    } catch {
+      setNotesError('تعذر تحميل التهاني الآن. يرجى المحاولة مجددًا.');
     } finally {
       setNotesLoading(false);
     }
@@ -134,24 +134,24 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
     const trimmedMessage = message.trim();
 
     if (identity === 'named' && trimmedName.length < 2) {
-      setSubmitError('Please enter your name or choose “Post anonymously”.');
+      setSubmitError('يرجى كتابة اسمك أو اختيار «دون اسم».');
       return;
     }
 
     if (trimmedMessage.length < 2) {
-      setSubmitError('Please write a short note before sending.');
+      setSubmitError('يرجى كتابة تهنئة قصيرة قبل الإرسال.');
       return;
     }
 
     const submittedName = identity === 'named' ? trimmedName : '';
 
     if (containsUnsafeCode(submittedName) || containsUnsafeCode(trimmedMessage)) {
-      setSubmitError('Please write a plain-text note without HTML, scripts, or database commands.');
+      setSubmitError('يرجى كتابة رسالة نصية دون شيفرات أو أوامر.');
       return;
     }
 
     if (looksLikeSpam(submittedName) || looksLikeSpam(trimmedMessage)) {
-      setSubmitError('Please write a genuine note without excessive repeated characters or links.');
+      setSubmitError('يرجى تجنب تكرار الأحرف والروابط بكثرة.');
       return;
     }
 
@@ -176,18 +176,18 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
       });
       const data = await readNotesApiResponse<GuestNoteMutationResponse>(
         response,
-        'Your note could not be sent.'
+        'تعذر إرسال تهنئتك. يرجى المحاولة مجددًا.'
       );
 
       if (!isGuestNote(data.note)) {
-        throw new Error('The guest-notes service did not confirm your note. Please try again.');
+        throw new Error('لم نتمكن من تأكيد حفظ تهنئتك، يرجى المحاولة مجددًا.');
       }
 
       setMessage('');
       setSubmitMessage(
         data.note.anonymous
-          ? 'Your anonymous note has been added with love.'
-          : `Thank you, ${data.note.author}. Your note has been added with love.`
+          ? 'وصلت تهنئتك دون اسم، شكرًا لمحبتك.'
+          : `شكرًا يا ${data.note.author}، وصلت تهنئتك بكل حب.`
       );
 
       if (notesOpen) {
@@ -212,8 +212,8 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
         setExpandedNoteIds(new Set());
         setNotesLoaded(true);
       }
-    } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : 'Your note could not be sent.');
+    } catch {
+      setSubmitError('تعذر إرسال تهنئتك الآن. يرجى المحاولة مجددًا.');
     } finally {
       setSubmitting(false);
     }
@@ -226,9 +226,9 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
       <div className="section-shell">
         <SectionHeading
           id="guest-notes-heading"
-          eyebrow="A gentle note"
+          eyebrow="كلمة من القلب"
           title={title}
-          description={`${description} This wall is for ${coupleNames}.`}
+          description={`${description} تهانيكم إلى ${coupleNames}.`}
           light
         />
 
@@ -237,14 +237,14 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
             <Heart />
           </span>
           <div className="note-compose-heading">
-            <p className="eyebrow">From your heart</p>
-            <h3>Write your note</h3>
-            <p>Choose whether to sign your name or share it anonymously.</p>
+            <p className="eyebrow">بمحبة صادقة</p>
+            <h3>اكتب تهنئتك</h3>
+            <p>يمكنك كتابة اسمك أو إرسال التهنئة دون اسم.</p>
           </div>
 
           <form className="guest-note-form" onSubmit={submitNote}>
             <fieldset className="note-identity">
-              <legend>How should your note appear?</legend>
+              <legend>كيف تحب أن تظهر تهنئتك؟</legend>
               <div className="note-identity-options">
                 <label>
                   <input
@@ -255,8 +255,8 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
                     onChange={() => setIdentity('named')}
                   />
                   <span>
-                    <strong>With my name</strong>
-                    <small>Your name appears beside the note.</small>
+                    <strong>باسمي</strong>
+                    <small>يظهر اسمك بجوار التهنئة.</small>
                   </span>
                 </label>
                 <label>
@@ -268,8 +268,8 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
                     onChange={() => setIdentity('anonymous')}
                   />
                   <span>
-                    <strong>Post anonymously</strong>
-                    <small>Your note appears as “Anonymous”.</small>
+                    <strong>دون اسم</strong>
+                    <small>تظهر تهنئتك باسم «محب مجهول».</small>
                   </span>
                 </label>
               </div>
@@ -277,7 +277,7 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
 
             {identity === 'named' ? (
               <label className="note-input-field">
-                <span>Your name</span>
+                <span>اسمك</span>
                 <input
                   type="text"
                   name="name"
@@ -285,27 +285,27 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
                   onChange={(event) => setName(event.target.value)}
                   maxLength={60}
                   autoComplete="name"
-                  placeholder="Your name"
+                  placeholder="اسمك"
                   required
                 />
               </label>
             ) : null}
 
             <label className="note-input-field note-message-field">
-              <span>Your note</span>
+              <span>تهنئتك</span>
               <textarea
                 name="message"
                 value={message}
                 onChange={(event) => setMessage(event.target.value)}
                 maxLength={MAX_MESSAGE_LENGTH}
                 rows={5}
-                placeholder="Write a wish, memory, or dua…"
+                placeholder="اكتب أمنية جميلة أو ذكرى أو دعاء…"
                 required
               />
             </label>
 
             <label className="note-honeypot" aria-hidden="true">
-              Leave this field empty
+              اترك هذا الحقل فارغًا
               <input name="website" type="text" tabIndex={-1} autoComplete="off" />
             </label>
 
@@ -315,7 +315,7 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
               </span>
               <button className="button button-dark" type="submit" disabled={submitting}>
                 {submitting ? <LoaderCircle className="note-spinner" aria-hidden="true" /> : <Send aria-hidden="true" />}
-                {submitting ? 'Sending…' : 'Send note'}
+                {submitting ? 'جارٍ الإرسال…' : 'إرسال التهنئة'}
               </button>
             </div>
 
@@ -335,7 +335,7 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
             onClick={toggleNotes}
           >
             {notesOpen ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
-            {notesOpen ? 'Hide notes' : 'Show all notes'}
+            {notesOpen ? 'إخفاء التهاني' : 'عرض كل التهاني'}
           </button>
         </div>
 
@@ -343,7 +343,7 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
           <div className="notes-wall" id="guest-notes-wall" aria-live="polite">
             {notesLoading ? (
               <p className="notes-wall-state">
-                <LoaderCircle className="note-spinner" aria-hidden="true" /> Gathering the notes…
+                <LoaderCircle className="note-spinner" aria-hidden="true" /> جارٍ تحميل التهاني…
               </p>
             ) : null}
 
@@ -355,13 +355,13 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
                   type="button"
                   onClick={() => void loadNotes(pagination.page)}
                 >
-                  Try again
+                  حاول مرة أخرى
                 </button>
               </div>
             ) : null}
 
             {!notesLoading && !notesError && notesLoaded && notes.length === 0 ? (
-              <p className="notes-wall-state">No notes yet. Yours can be the first.</p>
+              <p className="notes-wall-state">لا توجد تهانٍ بعد، كن أول من يشاركنا المحبة.</p>
             ) : null}
 
             {!notesLoading && !notesError && notes.length > 0 ? (
@@ -394,11 +394,11 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
                                 })
                               }
                             >
-                              {isExpanded ? 'Show less' : 'Show more'}
+                              {isExpanded ? 'عرض أقل' : 'عرض المزيد'}
                             </button>
                           ) : null}
                           <footer>
-                            <strong>{note.author}</strong>
+                            <strong>{note.anonymous ? 'محب مجهول' : note.author}</strong>
                             {formatNoteDate(note.createdAt) ? (
                               <time dateTime={note.createdAt}>{formatNoteDate(note.createdAt)}</time>
                             ) : null}
@@ -408,25 +408,25 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
                     );
                   })}
                 </ul>
-                <nav className="notes-pagination" aria-label="Guest notes pages">
+                <nav className="notes-pagination" aria-label="صفحات التهاني">
                   <button
                     type="button"
-                    aria-label="Previous notes page"
+                    aria-label="صفحة التهاني السابقة"
                     disabled={notesLoading || !pagination.hasPreviousPage}
                     onClick={() => void loadNotes(pagination.page - 1)}
                   >
                     <ChevronLeft aria-hidden="true" />
                   </button>
                   <p aria-live="polite">
-                    Page <strong>{pagination.page}</strong> of {pagination.totalPages}
+                    الصفحة <strong>{pagination.page}</strong> من {pagination.totalPages}
                     {' '}
                     <span>
-                      {pagination.total} {pagination.total === 1 ? 'note' : 'notes'}
+                      {pagination.total} {pagination.total === 1 ? 'تهنئة' : 'تهانٍ'}
                     </span>
                   </p>
                   <button
                     type="button"
-                    aria-label="Next notes page"
+                    aria-label="صفحة التهاني التالية"
                     disabled={notesLoading || !pagination.hasNextPage}
                     onClick={() => void loadNotes(pagination.page + 1)}
                   >

@@ -10,11 +10,11 @@ describe('music control', () => {
     const user = userEvent.setup();
     render(<MusicPlayer src="/assets/audio/divenire.mp3" title="Divenire" visible />);
 
-    await user.click(screen.getByRole('button', { name: /play divenire/i }));
+    await user.click(screen.getByRole('button', { name: /تشغيل divenire/i }));
     expect(play).toHaveBeenCalledOnce();
-    expect(screen.getByRole('button', { name: /pause divenire/i })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: /إيقاف divenire/i })).toHaveAttribute('aria-pressed', 'true');
 
-    await user.click(screen.getByRole('button', { name: /pause divenire/i }));
+    await user.click(screen.getByRole('button', { name: /إيقاف divenire/i }));
     expect(pause).toHaveBeenCalledOnce();
   });
 });

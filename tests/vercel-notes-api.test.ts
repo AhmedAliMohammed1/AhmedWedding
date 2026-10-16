@@ -59,7 +59,7 @@ describe('Vercel guest notes API', () => {
     expect(data.note.id).toMatch(/^[0-9a-f-]{36}$/);
     expect(blobMocks.put).toHaveBeenCalledOnce();
     expect(blobMocks.put.mock.calls[0]?.[0]).toMatch(
-      new RegExp(`^wedding-guest-notes/notes/\\d{13}-${data.note.id}\\.json$`)
+      new RegExp(`^ahmed-alaa-2026-guest-notes/notes/\\d{13}-${data.note.id}\\.json$`)
     );
     const storedPayload = JSON.parse(blobMocks.put.mock.calls[0]?.[1] as string) as {
       author: string;
@@ -99,12 +99,12 @@ describe('Vercel guest notes API', () => {
   it('reads all stored note pages and returns notes newest first', async () => {
     blobMocks.list
       .mockResolvedValueOnce({
-        blobs: [{ pathname: 'wedding-guest-notes/notes/older.json' }],
+        blobs: [{ pathname: 'ahmed-alaa-2026-guest-notes/notes/older.json' }],
         cursor: 'next-page',
         hasMore: true
       })
       .mockResolvedValueOnce({
-        blobs: [{ pathname: 'wedding-guest-notes/notes/newer.json' }],
+        blobs: [{ pathname: 'ahmed-alaa-2026-guest-notes/notes/newer.json' }],
         hasMore: false
       });
     blobMocks.get.mockImplementation((pathname: string) =>
@@ -260,7 +260,7 @@ describe('Vercel guest notes API', () => {
     }));
     blobMocks.list.mockResolvedValue({
       blobs: notes.map((note) => ({
-        pathname: `wedding-guest-notes/notes/${Date.parse(note.createdAt)}-${note.id}.json`
+        pathname: `ahmed-alaa-2026-guest-notes/notes/${Date.parse(note.createdAt)}-${note.id}.json`
       })),
       hasMore: false
     });
@@ -322,7 +322,7 @@ describe('Vercel guest notes API', () => {
     ];
     blobMocks.list.mockResolvedValue({
       blobs: storedNotes.map((note) => ({
-        pathname: `wedding-guest-notes/notes/${Date.parse(note.createdAt)}-${note.id}.json`
+        pathname: `ahmed-alaa-2026-guest-notes/notes/${Date.parse(note.createdAt)}-${note.id}.json`
       })),
       hasMore: false
     });
@@ -342,7 +342,7 @@ describe('Vercel guest notes API', () => {
 
   it('rate limits repeated submissions without storing raw visitor addresses', async () => {
     const clientHash = createHash('sha256')
-      .update('203.0.113.8|Guest Browser|wedding-guest-notes-v1')
+      .update('203.0.113.8|Guest Browser|ahmed-alaa-2026-guest-notes-v1')
       .digest('hex');
     const recentNotes = Array.from({ length: 5 }, (_, index) => ({
       id: `recent-${index}`,
@@ -354,7 +354,7 @@ describe('Vercel guest notes API', () => {
     }));
     blobMocks.list.mockResolvedValue({
       blobs: recentNotes.map((note) => ({
-        pathname: `wedding-guest-notes/notes/${Date.parse(note.createdAt)}-${note.id}.json`
+        pathname: `ahmed-alaa-2026-guest-notes/notes/${Date.parse(note.createdAt)}-${note.id}.json`
       })),
       hasMore: false
     });

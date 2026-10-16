@@ -19,7 +19,7 @@ const storageErrorResponse = (message: string, status = 503) =>
   });
 
 const guestNotesProps = {
-  coupleNames: 'Ahmed & Nada',
+  coupleNames: 'احمد و الاء',
   title: 'Leave a little love',
   description: 'Share a wish, a dua, or a favourite memory.'
 };
@@ -52,11 +52,11 @@ describe('guest notes section', () => {
     const user = userEvent.setup();
     render(<GuestNotesSection {...guestNotesProps} />);
 
-    expect(screen.getByRole('textbox', { name: /your name/i })).toBeInTheDocument();
-    await user.click(screen.getByRole('radio', { name: /post anonymously/i }));
+    expect(screen.getByRole('textbox', { name: /اسمك/i })).toBeInTheDocument();
+    await user.click(screen.getByRole('radio', { name: /دون اسم/i }));
 
-    expect(screen.queryByRole('textbox', { name: /your name/i })).not.toBeInTheDocument();
-    expect(screen.getByText(/your note appears as “anonymous”/i)).toBeInTheDocument();
+    expect(screen.queryByRole('textbox', { name: /اسمك/i })).not.toBeInTheDocument();
+    expect(screen.getByText(/تظهر تهنئتك باسم «محب مجهول»/i)).toBeInTheDocument();
   });
 
   it('submits a signed note with the visitor name', async () => {
@@ -72,11 +72,11 @@ describe('guest notes section', () => {
     const user = userEvent.setup();
     render(<GuestNotesSection {...guestNotesProps} />);
 
-    await user.type(screen.getByRole('textbox', { name: /your name/i }), 'Layla');
-    await user.type(screen.getByRole('textbox', { name: /your note/i }), note.message);
-    await user.click(screen.getByRole('button', { name: /send note/i }));
+    await user.type(screen.getByRole('textbox', { name: /اسمك/i }), 'Layla');
+    await user.type(screen.getByRole('textbox', { name: /تهنئتك/i }), note.message);
+    await user.click(screen.getByRole('button', { name: /إرسال التهنئة/i }));
 
-    expect(await screen.findByText(/thank you, layla/i)).toBeInTheDocument();
+    expect(await screen.findByText(/شكرًا يا Layla/i)).toBeInTheDocument();
     const request = fetchMock.mock.calls[0];
     expect(request?.[0]).toBe('/api/notes');
     expect(request?.[1]?.method).toBe('POST');
@@ -103,11 +103,11 @@ describe('guest notes section', () => {
     const user = userEvent.setup();
     render(<GuestNotesSection {...guestNotesProps} />);
 
-    await user.click(screen.getByRole('radio', { name: /post anonymously/i }));
-    await user.type(screen.getByRole('textbox', { name: /your note/i }), note.message);
-    await user.click(screen.getByRole('button', { name: /send note/i }));
+    await user.click(screen.getByRole('radio', { name: /دون اسم/i }));
+    await user.type(screen.getByRole('textbox', { name: /تهنئتك/i }), note.message);
+    await user.click(screen.getByRole('button', { name: /إرسال التهنئة/i }));
 
-    expect(await screen.findByText(/anonymous note has been added/i)).toBeInTheDocument();
+    expect(await screen.findByText(/وصلت تهنئتك دون اسم/i)).toBeInTheDocument();
     const request = fetchMock.mock.calls[0];
     const requestBody = request?.[1]?.body;
     expect(typeof requestBody).toBe('string');
@@ -127,15 +127,15 @@ describe('guest notes section', () => {
     const user = userEvent.setup();
     render(<GuestNotesSection {...guestNotesProps} />);
 
-    await user.type(screen.getByRole('textbox', { name: /your name/i }), 'Layla');
-    await user.type(screen.getByRole('textbox', { name: /your note/i }), 'A beautiful wish.');
-    await user.click(screen.getByRole('button', { name: /send note/i }));
+    await user.type(screen.getByRole('textbox', { name: /اسمك/i }), 'Layla');
+    await user.type(screen.getByRole('textbox', { name: /تهنئتك/i }), 'A beautiful wish.');
+    await user.click(screen.getByRole('button', { name: /إرسال التهنئة/i }));
 
-    expect(await screen.findByText(/service is not connected on this deployment/i)).toBeInTheDocument();
+    expect(await screen.findByText(/تعذر إرسال تهنئتك الآن/i)).toBeInTheDocument();
     expect(screen.queryByText('[object Object]')).not.toBeInTheDocument();
   });
 
-  it('shows the Vercel storage recovery instruction returned by the API', async () => {
+  it('shows an Arabic retry message for unavailable storage', async () => {
     const recoveryMessage =
       'Vercel cannot access the connected Blob store. Reconnect it, confirm BLOB_STORE_ID is enabled for Production (or BLOB_READ_WRITE_TOKEN for an older connection), and redeploy.';
     const fetchMock = vi
@@ -145,11 +145,11 @@ describe('guest notes section', () => {
     const user = userEvent.setup();
     render(<GuestNotesSection {...guestNotesProps} />);
 
-    await user.click(screen.getByRole('radio', { name: /post anonymously/i }));
-    await user.type(screen.getByRole('textbox', { name: /your note/i }), 'A beautiful wish.');
-    await user.click(screen.getByRole('button', { name: /send note/i }));
+    await user.click(screen.getByRole('radio', { name: /دون اسم/i }));
+    await user.type(screen.getByRole('textbox', { name: /تهنئتك/i }), 'A beautiful wish.');
+    await user.click(screen.getByRole('button', { name: /إرسال التهنئة/i }));
 
-    expect(await screen.findByText(recoveryMessage)).toBeInTheDocument();
+    expect(await screen.findByText(/تعذر إرسال تهنئتك الآن/)).toBeInTheDocument();
     expect(screen.queryByText(/temporarily unavailable/i)).not.toBeInTheDocument();
   });
 
@@ -164,11 +164,11 @@ describe('guest notes section', () => {
     const user = userEvent.setup();
     render(<GuestNotesSection {...guestNotesProps} />);
 
-    await user.click(screen.getByRole('radio', { name: /post anonymously/i }));
-    await user.type(screen.getByRole('textbox', { name: /your note/i }), 'A beautiful wish.');
-    await user.click(screen.getByRole('button', { name: /send note/i }));
+    await user.click(screen.getByRole('radio', { name: /دون اسم/i }));
+    await user.type(screen.getByRole('textbox', { name: /تهنئتك/i }), 'A beautiful wish.');
+    await user.click(screen.getByRole('button', { name: /إرسال التهنئة/i }));
 
-    expect(await screen.findByText(/deploy the complete project with its \/api\/notes server function/i)).toBeInTheDocument();
+    expect(await screen.findByText(/تعذر إرسال تهنئتك الآن/i)).toBeInTheDocument();
   });
 
   it('loads previous notes only when the visitor asks to see them', async () => {
@@ -198,12 +198,12 @@ describe('guest notes section', () => {
     render(<GuestNotesSection {...guestNotesProps} />);
 
     expect(fetchMock).not.toHaveBeenCalled();
-    await user.click(screen.getByRole('button', { name: /show all notes/i }));
+    await user.click(screen.getByRole('button', { name: /عرض كل التهاني/i }));
 
     expect(await screen.findByText('A lifetime of laughter and peace.')).toBeInTheDocument();
     expect(screen.getByText('May every year be sweeter than the last.')).toBeInTheDocument();
     expect(screen.getByText('Omar')).toBeInTheDocument();
-    expect(screen.getByText('Anonymous')).toBeInTheDocument();
+    expect(screen.getByText('محب مجهول')).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith('/api/notes?page=1&pageSize=6', {
       headers: { Accept: 'application/json' }
     });
@@ -215,14 +215,14 @@ describe('guest notes section', () => {
     const user = userEvent.setup();
     render(<GuestNotesSection {...guestNotesProps} />);
 
-    await user.click(screen.getByRole('radio', { name: /post anonymously/i }));
+    await user.click(screen.getByRole('radio', { name: /دون اسم/i }));
     await user.type(
-      screen.getByRole('textbox', { name: /your note/i }),
+      screen.getByRole('textbox', { name: /تهنئتك/i }),
       "<script>alert('xss')</script>"
     );
-    await user.click(screen.getByRole('button', { name: /send note/i }));
+    await user.click(screen.getByRole('button', { name: /إرسال التهنئة/i }));
 
-    expect(await screen.findByText(/plain-text note without html/i)).toBeInTheDocument();
+    expect(await screen.findByText(/يرجى كتابة رسالة نصية/i)).toBeInTheDocument();
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -249,21 +249,21 @@ describe('guest notes section', () => {
     const user = userEvent.setup();
     render(<GuestNotesSection {...guestNotesProps} />);
 
-    await user.click(screen.getByRole('button', { name: /show all notes/i }));
-    expect(await screen.findByRole('button', { name: /show more/i })).toHaveAttribute(
+    await user.click(screen.getByRole('button', { name: /عرض كل التهاني/i }));
+    expect(await screen.findByRole('button', { name: /عرض المزيد/i })).toHaveAttribute(
       'aria-expanded',
       'false'
     );
     expect(screen.queryByText(longMessage)).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: /show more/i }));
+    await user.click(screen.getByRole('button', { name: /عرض المزيد/i }));
     expect(screen.getByText(longMessage)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /show less/i })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: /عرض أقل/i })).toHaveAttribute(
       'aria-expanded',
       'true'
     );
 
-    await user.click(screen.getByRole('button', { name: /show less/i }));
+    await user.click(screen.getByRole('button', { name: /عرض أقل/i }));
     expect(screen.queryByText(longMessage)).not.toBeInTheDocument();
   });
 
@@ -317,16 +317,16 @@ describe('guest notes section', () => {
     const user = userEvent.setup();
     render(<GuestNotesSection {...guestNotesProps} />);
 
-    await user.click(screen.getByRole('button', { name: /show all notes/i }));
+    await user.click(screen.getByRole('button', { name: /عرض كل التهاني/i }));
     expect(await screen.findByText('First page wish 1.')).toBeInTheDocument();
-    expect(screen.getByRole('navigation', { name: /guest notes pages/i })).toHaveTextContent(
-      /page\s*1\s*of\s*2/i
+    expect(screen.getByRole('navigation', { name: /صفحات التهاني/i })).toHaveTextContent(
+      /الصفحة\s*1\s*من\s*2/i
     );
 
-    await user.click(screen.getByRole('button', { name: /next notes page/i }));
+    await user.click(screen.getByRole('button', { name: /صفحة التهاني التالية/i }));
     expect(await screen.findByText('A wish from the second page.')).toBeInTheDocument();
-    expect(screen.getByRole('navigation', { name: /guest notes pages/i })).toHaveTextContent(
-      /page\s*2\s*of\s*2/i
+    expect(screen.getByRole('navigation', { name: /صفحات التهاني/i })).toHaveTextContent(
+      /الصفحة\s*2\s*من\s*2/i
     );
     expect(fetchMock).toHaveBeenCalledWith('/api/notes?page=2&pageSize=6', {
       headers: { Accept: 'application/json' }

@@ -1,67 +1,8 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { calculateCountdown } from '../../lib/countdown';
-import { SectionHeading } from '../common/SectionHeading';
-
-interface Props {
-  weddingDate: string;
-  timezone: string;
-}
-
-export function Countdown({ weddingDate, timezone }: Props) {
-  const [countdown, setCountdown] = useState(() => calculateCountdown(weddingDate));
-  const entries = useMemo(
-    () =>
-      [
-        ['days', countdown.days],
-        ['hours', countdown.hours],
-        ['minutes', countdown.minutes],
-        ['seconds', countdown.seconds]
-      ] as const,
-    [countdown]
-  );
-
-  useEffect(() => {
-    setCountdown(calculateCountdown(weddingDate));
-    const timer = window.setInterval(() => setCountdown(calculateCountdown(weddingDate)), 1000);
-    return () => window.clearInterval(timer);
-  }, [weddingDate]);
-
-  return (
-    <section className="countdown-section section-shell" id="countdown" aria-labelledby="countdown-heading">
-      <SectionHeading id="countdown-heading" eyebrow="Save the date" title="Until our garden celebration" />
-      {!countdown.valid ? (
-        <p className="countdown-message" role="status">
-          The celebration date will be announced soon.
-        </p>
-      ) : countdown.complete ? (
-        <p className="countdown-message celebration-message" role="status">
-          Today is the day — let the celebration begin!
-        </p>
-      ) : (
-        <>
-          <div className="countdown-grid" aria-live="off">
-            {entries.map(([label, value]) => (
-              <div className="countdown-cell" key={label}>
-                <AnimatePresence mode="popLayout" initial={false}>
-                  <motion.strong
-                    key={value}
-                    initial={{ y: -8, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 8, opacity: 0 }}
-                    transition={{ duration: 0.22 }}
-                    aria-label={`${value} ${label}`}
-                  >
-                    {String(value).padStart(2, '0')}
-                  </motion.strong>
-                </AnimatePresence>
-                <span>{label}</span>
-              </div>
-            ))}
-          </div>
-          <p className="timezone-note">Times shown for {timezone.replace('_', ' ')}</p>
-        </>
-      )}
-    </section>
-  );
+export function Countdown({weddingDate, timezone}: {weddingDate:string; timezone:string}) {
+ const [value,setValue]=useState(()=>calculateCountdown(weddingDate));
+ useEffect(()=>{setValue(calculateCountdown(weddingDate)); const timer=window.setInterval(()=>setValue(calculateCountdown(weddingDate)),1000);return ()=>window.clearInterval(timer)},[weddingDate]);
+ const items=[['يوم',value.days],['ساعة',value.hours],['دقيقة',value.minutes],['ثانية',value.seconds]] as const;
+ return <section className="countdown-section" id="countdown" aria-labelledby="countdown-heading"><header className="section-heading"><h2 id="countdown-heading">نعدّ اللحظات حتى نلقاكم</h2></header>{!value.valid?<p role="status">سيُعلن موعد الحفل قريبًا.</p>:value.complete?<p role="status">حان موعد فرحتنا، أهلًا بكم في حكايتنا!</p>:<><div className="countdown-grid" aria-live="off">{items.map(([label,num])=><div className="countdown-cell" key={label}><strong>{num.toLocaleString('ar-EG',{minimumIntegerDigits:2})}</strong><span>{label}</span></div>)}</div><p className="timezone-note">{timezone==='Africa/Cairo'?'بتوقيت القاهرة':timezone}</p></>}</section>
 }

@@ -129,7 +129,7 @@ const clientHashFor = (request: Request) => {
   const userAgent = (request.headers.get('user-agent') || 'unknown').slice(0, 200);
 
   return createHash('sha256')
-    .update(`${address.slice(0, 100)}|${userAgent}|wedding-guest-notes-v1`)
+    .update(`${address.slice(0, 100)}|${userAgent}|ahmed-alaa-2026-guest-notes-v1`)
     .digest('hex');
 };
 

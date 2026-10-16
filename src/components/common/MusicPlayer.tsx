@@ -65,10 +65,10 @@ export const MusicPlayer = forwardRef<MusicPlayerHandle, Props>(function MusicPl
           className={`music-control ${playing ? 'is-playing' : ''}`}
           type="button"
           onClick={() => void toggle()}
-          aria-label={available ? `${playing ? 'Pause' : 'Play'} ${title}` : 'Background music unavailable'}
+          aria-label={available ? `${playing ? 'إيقاف' : 'تشغيل'} ${title}` : 'الموسيقى غير متاحة'}
           aria-pressed={playing}
           disabled={!available}
-          title={available ? title : 'Music file unavailable'}
+          title={available ? title : 'ملف الموسيقى غير متاح'}
         >
           <span className="music-rings" aria-hidden="true" />
           {available ? playing ? <Pause size={18} /> : <Play size={18} /> : <VolumeX size={18} />}

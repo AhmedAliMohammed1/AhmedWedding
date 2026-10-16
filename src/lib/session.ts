@@ -1,6 +1,6 @@
 export const sessionKeys = {
-  opened: 'sacred-garden-opened',
-  musicWanted: 'sacred-garden-music-wanted'
+  opened: 'ahmed-alaa-2026-opened',
+  musicWanted: 'ahmed-alaa-2026-music-wanted'
 } as const;
 
 export function readSessionBoolean(key: string, fallback = false) {

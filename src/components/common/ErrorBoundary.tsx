@@ -27,11 +27,11 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <main className="error-fallback">
           <Leaf aria-hidden="true" size={36} strokeWidth={1.25} />
-          <p className="eyebrow">A small pause</p>
-          <h1>The invitation could not open just now.</h1>
-          <p>Please refresh the page. If the problem continues, contact the couple directly.</p>
+          <p className="eyebrow">لحظة من فضلك</p>
+          <h1>تعذر فتح الدعوة الآن.</h1>
+          <p>يرجى تحديث الصفحة والمحاولة مجددًا.</p>
           <button className="button button-dark" type="button" onClick={() => window.location.reload()}>
-            Refresh invitation
+            تحديث الدعوة
           </button>
         </main>
       );
